@@ -1,35 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Первая веб-страница проекта Lesson 4 на GitHub Pages">
-  <title>Lesson 4 — первая страница</title>
-  <style>
-    :root { color-scheme: dark; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
-    * { box-sizing: border-box; }
-    body { min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 24px; background: radial-gradient(circle at 20% 10%, #23375b 0, transparent 38%), linear-gradient(145deg, #0c1222, #141d33); color: #f5f8ff; }
-    main { width: min(100%, 740px); background: #18243bdb; border: 1px solid #435477; border-radius: 24px; padding: clamp(30px, 7vw, 60px); box-shadow: 0 28px 80px #0006; }
-    .tag { display: inline-block; font-size: .85rem; border: 1px solid #48779c; background: #203e5b; color: #a7e5ff; border-radius: 100px; padding: 8px 14px; }
-    h1 { font-size: clamp(2.3rem, 7vw, 4rem); line-height: 1.1; letter-spacing: -.04em; margin: 28px 0 20px; }
-    p { color: #c5d1e5; font-size: 1.15rem; line-height: 1.7; }
-    .actions { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; margin-top: 32px; }
-    a.button { display: inline-block; border-radius: 11px; background: #9ce7ff; padding: 14px 20px; color: #101e30; font-weight: 700; text-decoration: none; }
-    a.button:hover { background: #d0f4ff; }
-    .muted { color: #9caccc; font-size: .9rem; }
-    code { background: #2b3954; padding: 2px 6px; border-radius: 5px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Власть верующего (урок 4)</title>
+<style>body{font:18px/1.6 system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;color:#243447;background:#f6f8fb}main{text-align:center;max-width:560px;padding:24px}p{color:#526277}</style>
 </head>
 <body>
-  <main>
-    <span class="tag">GitHub Pages · Lesson 4</span>
-    <h1>Сайт работает! 🚀</h1>
-    <p>Это первая веб-страница проекта <strong>Lesson 4</strong>, размещённая на бесплатном хостинге GitHub Pages.</p>
-    <p>Сейчас здесь стартовая страница. В дальнейшем можно добавить разделы, фотографии, меню и другие материалы — без покупки хостинга.</p>
-    <div class="actions">
-      <a class="button" href="https://github.com/ra-fares/Lesson_4">Открыть репозиторий</a>
-      <span class="muted">Изменить текст можно в файле <code>index.html</code>.</span>
-    </div>
-  </main>
+<main id="status"><h1>Власть верующего (урок 4)</h1><p>Загрузка урока и иллюстраций…</p></main>
+<script>
+(async function () {
+  const status = document.getElementById('status');
+  try {
+    const response = await fetch('./lesson-source.html');
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    let page = await response.text();
+    const start = page.indexOf('<!DOCTYPE html>');
+    if (start < 0 || !page.includes('<title>Власть верующего (урок 4)</title>')) {
+      throw new Error('Не найден оригинальный документ');
+    }
+    page = page.slice(start).trimEnd();
+    // Offline single-file Obsidian export: no metadata.json is available on GitHub Pages.
+    page = page.replace('this.isHttp="file:"!=window.location.protocol', 'this.isHttp=!1');
+    if (!page.includes('this.isHttp=!1')) throw new Error('Не удалось включить автономный режим');
+    // Table-of-contents links should target anchors on the current page.
+    page = page.replaceAll('href="Власть верующего (урок 4).html#', 'href="#');
+    document.open();
+    document.write(page);
+    document.close();
+    document.addEventListener('click', function (event) {
+      const anchor = event.target.closest('a[href^="#"]');
+      if (!anchor) return;
+      const id = decodeURIComponent(anchor.getAttribute('href').slice(1));
+      const heading = document.getElementById(id);
+      if (!heading) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      history.replaceState(null, '', '#' + encodeURIComponent(id));
+      heading.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, true);
+  } catch (error) {
+    status.innerHTML = '<h1>Не удалось открыть урок</h1><p>Проверьте публикацию GitHub Pages и обновите страницу.</p>';
+    console.error('Lesson loader:', error);
+  }
+})();
+</script>
 </body>
 </html>
